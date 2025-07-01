@@ -4,12 +4,13 @@ import cookieParser from 'cookie-parser'
 
 // router imports
 import { healthCheck } from "./controllers/healthcheck.controllers.js"
+import { registerUser } from './controllers/auth.controllers.js'
 
 const app = express()
 
 app.use(
     cors({
-        origin: process.env.BASE_URL,
+        origin: process.env.FRONTEND_URL,
         credentials: true,
         methods:['GET', 'POST', "DELETE", "PUT"],
         allowedHeaders: ['Content-Type', 'Authorization']
@@ -23,6 +24,7 @@ app.use(cookieParser())
 
 
 app.use("/api/v1/healthcheck", healthCheck)
+app.use("/api/v1/auth", registerUser)
 
 // app.use("/api/v1/auth", authRoutes)
 

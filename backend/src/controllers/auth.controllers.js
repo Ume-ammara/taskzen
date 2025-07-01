@@ -1,23 +1,117 @@
-import {asyncHandler} from "../utils/async-handler.js"
-import {ApiError} from "../utils/api-error.js"
-import {ApiResponse} from "../utils/api-response.js"
-import User from "../models/user.models.js"
+import { asyncHandler } from "../utils/async-handler.js";
+import { ApiError } from "../utils/api-error.js";
+import { ApiResponse } from "../utils/api-response.js";
+import { User } from "../models/user.models.js";
+import { emailVerificationMailGenContent, sendMail } from "../utils/mail.js";
+import crypto from "crypto"
+import jwt from "jsonwebtoken"
 
 import {
-    registerUserSchema,
-    logoutSchema,
-    LoginUserSchema,
-    forgotPasswordSchema,
-    resetPasswordSchema,
-    updateProfileSchema,
-    refreshTokenSchema
+  registerUserSchema,
+  logoutSchema,
+  LoginUserSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  updateProfileSchema,
+  refreshTokenSchema,
+} from "../schemas/auth.schema.js";
 
-     } from "../schemas/auth.schema.js"
+export const registerUser = asyncHandler(async (req, res) => {
+  const { fullname, username, email, password } = registerUserSchema.parse(
+    req.body,
+  );
 
-export const registrUser = asyncHandler(async (req, res) =>{
+  const existedUser = await User.findOne( { $or: [{ email }, {username}] });
+  if (existedUser) {
+    throw new ApiError(409, "User already exists with this email or username");
+  }
 
-    const {fullname, username, email, password, } = registerUserSchema.parse(req.body)
 
-    
+  const unHashedtoken = crypto.randomBytes(20).toString("hex");
 
-})
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(unHashedtoken)
+    .digest("hex");
+  const tokenExpiry = Date.now() + 20 * 60 * 1000;
+
+  const emailVerificationUrl = `${process.env.FRONTEND_URL}/api/v1/auth/verifiy-email/${unHashedtoken}`;
+
+  const mailGen = emailVerificationMailGenContent(
+    fullname,
+    emailVerificationUrl,
+  );
+let user = null
+ try {
+     await sendMail({ email, subject: "email verification", mailGenContent: mailGen });
+   
+      user = await User.create({
+       fullname,
+       username,
+       email,
+       password,
+       emailVerificationToken: hashedToken,
+       emailVerificationExpiry: tokenExpiry, 
+
+     });
+
+ } catch (error) {
+    console.log("error", error)
+ }
+
+  return res.status(201).json(
+    new ApiResponse(201, "User registered successfully", {
+    user
+    }),
+  );
+});
+
+export const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = LoginUserSchema.parse(req.body);
+  const user = await User.findOne({email})
+  if(!user){
+    throw new ApiError(404, "user dose not exeit with this email")
+  }
+  const isPasswordCorrect = await user.isPasswordCorrect(password)
+  if(!isPasswordCorrect){
+    throw new ApiError(401, "Invalid email or password")
+  }
+
+  if(!user.isEmailVerified){
+    throw new ApiError(401, "please  verify your email")
+  }
+
+  const accessToken = user.generateAccessToken()
+   const refreshToken = user.generateRefreshToken()
+
+   
+   const isProduction = process.env.NODE_ENV === "production";
+
+   const refreshCookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000, 
+  };
+
+  const accessCookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 15 * 60 * 1000,
+  };
+
+  //  Set cookies
+  res.cookie("refreshToken", refreshToken, refreshCookieOptions);
+  res.cookie("accessToken", accessToken, accessCookieOptions);
+
+  return res.status(200).json(new ApiResponse(200, "User logged in successfully", {
+    user: {
+      _id: user._id,
+      email: user.email,
+      name: user.name,
+    },
+    accessToken
+  }));
+
+});
