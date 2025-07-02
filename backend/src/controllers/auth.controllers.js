@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/async-handler.js";
 import { ApiError } from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { User } from "../models/user.models.js";
-import { emailVerificationMailGenContent, sendMail } from "../utils/mail.js";
+import { emailVerificationMailGenContent, forgotPasswordMailGenContent, sendMail } from "../utils/mail.js";
 import crypto from "crypto"
 import jwt from "jsonwebtoken"
 
@@ -84,7 +84,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   const accessToken = user.generateAccessToken()
    const refreshToken = user.generateRefreshToken()
 
-   
+
    const isProduction = process.env.NODE_ENV === "production";
 
    const refreshCookieOptions = {
@@ -115,3 +115,57 @@ export const loginUser = asyncHandler(async (req, res) => {
   }));
 
 });
+
+export const logoutUser = asyncHandler(async (req, res)=>{
+
+  const token = req.cookies?.refreshToken;
+  if(!token){
+    throw new ApiError(400, "You are not logged in")
+  }
+
+
+  res.clearCookie("refreshToken",{
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production"? "none": "lax",
+
+  })
+
+  res.clearCookie("accessToken",{
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production"? "none": "lax",
+
+  })
+
+  return res.status(200).json(new ApiResponse(200, "User logged out successfully"))
+
+})
+
+export const forgotPassword = asyncHandler(async(req, res)=>{
+     const {email} = forgotPasswordSchema.parse(req.body)
+     const user = await User.findOne({ email })
+     if(!user){
+      throw new ApiError(400, "user not exsist with this email")
+     }
+     const {hashedToken, unHashedtoken, tokenExpiry} = await user.generateTemporaryToken()
+
+     user.forgotPasswordToken = hashedToken;
+     user.forgotPasswordExpiry = tokenExpiry
+     await user.save()
+
+     const passwordRestUrl = `${process.env.FRONTEND_URL}/api/v1/auth/reset-password/${unHashedtoken}`
+
+     sendMail({
+      
+      email: user.email,
+      subject: "Forgot Password",
+      mailGenContent:forgotPasswordMailGenContent(user.fullname, passwordRestUrl)
+     })
+
+     return res.status(200).json(
+      new ApiResponse(200, "Password reset link sent to your email",{linkExpiry:tokenExpiry}),
+      
+)
+
+})
