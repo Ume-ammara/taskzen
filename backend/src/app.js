@@ -4,7 +4,8 @@ import cookieParser from 'cookie-parser'
 
 // router imports
 import { healthCheck } from "./controllers/healthcheck.controllers.js"
-import { registerUser } from './controllers/auth.controllers.js'
+// import { loginUser, registerUser } from './controllers/auth.controllers.js'
+import router from './routes/auth.routes.js'
 
 const app = express()
 
@@ -24,9 +25,9 @@ app.use(cookieParser())
 
 
 app.use("/api/v1/healthcheck", healthCheck)
-app.use("/api/v1/auth", registerUser)
+app.use("/api/v1/auth", router)
 
-// app.use("/api/v1/auth", authRoutes)
+
 
 
 export default app

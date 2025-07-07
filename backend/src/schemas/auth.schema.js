@@ -9,7 +9,7 @@ export const  registerUserSchema = z.object({
 })
 
 export const LoginUserSchema = z.object({
-     email: z.string().trim().email("Enter a valid email"),
+    email: z.string().trim().email("Enter a valid email"),
     password: z.string().trim().min(6, "Password must be at least 6 characters")
 })
 
@@ -30,11 +30,8 @@ export const updateProfileSchema = z.object({
      fullname: z.string().trim().min(3, "Full name must be at least 3 characters"),
 })
 
-export const logoutSchema = z.object({
-     refreshToken: z.string().trim().nonempty("Refresh token is required"),
-})
 
-export const refreshTokenSchema = z.object({
-    refreshToken : z.string().trim().nonempty("Refresh token is required"),
+export const verifyEmailSchema = z.object({
+    token: z.string().nonempty("Token is required")
 })
 

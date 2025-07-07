@@ -27,6 +27,11 @@ const userSchema = new Schema({
         lowercase : true,
         trim : true,
     },
+    role:{
+        type:String,
+        enum:['admin', 'user'],
+        default: "user"
+    },
     email:{
         type: String,
         required : true,
@@ -76,7 +81,8 @@ userSchema.methods.generateAccessToken =  function (){
         {
             _id: this._id,
             email: this.email,
-            username: this.username
+            username: this.username,
+            role: this.role
         },
         process.env.ACCESS_TOKEN_SECRET,
         {expiresIn: process.env.ACCESS_TOKEN_EXPIRY}
