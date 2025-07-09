@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import { healthCheck } from "./controllers/healthcheck.controllers.js"
 // import { loginUser, registerUser } from './controllers/auth.controllers.js'
 import router from './routes/auth.routes.js'
+import projectRouter from './routes/project.routes.js'
 
 const app = express()
 
@@ -26,6 +27,7 @@ app.use(cookieParser())
 
 app.use("/api/v1/healthcheck", healthCheck)
 app.use("/api/v1/auth", router)
+app.use("/api/v1/project", projectRouter)
 
 
 

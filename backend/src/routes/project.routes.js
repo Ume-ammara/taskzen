@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { createProject } from "../controllers/project.controllers";
-import { isLogedIn } from "../middlewares/auth.middleware";
+import { createProject } from "../controllers/project.controllers.js";
+import { isLogedIn } from "../middlewares/auth.middleware.js";
 
-const router = Router()
+const projectRouter = Router()
 
-router.route("/create-project").post(isLogedIn , createProject)
+projectRouter.route("/create-project").post(isLogedIn , createProject)
 
-export default router
+export default projectRouter

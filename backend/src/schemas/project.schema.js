@@ -1,5 +1,5 @@
 import {z} from "zod"
-import { AvaibleUserRoles } from "../utils/constants"
+import { AvaibleUserRoles } from "../utils/constants.js"
 
 export const createProjectSchema = z.object({
     name:z.string().trim().min(4, "Name must be at least 4 characters"),
