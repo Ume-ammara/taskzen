@@ -116,6 +116,54 @@ export const loginUser = asyncHandler(async (req, res) => {
   );
 });
 
+export const refreshAccessToken = asyncHandler(async(req, res)=>{
+  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+  if(!incomingRefreshToken){
+    throw new ApiError(401, "Unauthorized token")
+  }
+  
+  let decodeToken
+
+  try {
+     decodeToken = jwt.verify(incomingRefreshToken, REFRESH_TOKEN_SECRET)
+  } catch (error) {
+     throw new ApiError(401, "Invalid or expired refresh token");
+  }
+
+  const user = await User.findById(decodeToken?._id)
+
+  if(!user){
+    throw new ApiError(401, "Invalid refresh token")
+  }
+
+  const newRefreshToken = user.generateRefreshToken()
+  const newAccessToken = user.generateAccessToken()
+
+  user.refreshToken = newRefreshToken
+  await user.save()
+
+    const isProduction = process.env.NODE_ENV === "production";
+
+  res.cookie("accessToken", newAccessToken, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+   maxAge: 15 * 60 * 1000,
+  })
+
+  res.cookie("refreshToken", newRefreshToken, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  })
+
+  res.status(200).json(new ApiResponse(200, "Access token refreshed", {accessToken: newAccessToken,
+    refreshToken: newRefreshToken,}))
+
+})
+
+
 export const logoutUser = asyncHandler(async (req, res) => {
   const token = req.cookies?.refreshToken;
   if (!token) {
