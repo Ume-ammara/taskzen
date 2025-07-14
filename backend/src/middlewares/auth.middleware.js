@@ -5,7 +5,7 @@ import {User} from "../models/user.models.js"
 
 
 
-export const isLogedIn = asyncHandler(async (req, res, next)=>{
+export const isLoggedIn = asyncHandler(async (req, res, next)=>{
     try {
         const token = req.cookies?.accessToken || req.header("Authorization")?.split(" ")[1]
         console.log("Token", token)

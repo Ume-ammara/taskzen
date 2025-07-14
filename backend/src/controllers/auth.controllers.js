@@ -148,7 +148,7 @@ export const refreshAccessToken = asyncHandler(async(req, res)=>{
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? "none" : "lax",
-   maxAge: 15 * 60 * 1000,
+    maxAge: 15 * 60 * 1000,
   })
 
   res.cookie("refreshToken", newRefreshToken, {
