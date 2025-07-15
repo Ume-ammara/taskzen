@@ -1,0 +1,100 @@
+import { Task } from "../models/task.models.js";
+import {
+  createTaskSchema,
+  updateStatusSchema,
+  updateTaskSchema,
+} from "../schemas/task.schema.js";
+import { ApiResponse } from "../utils/api-response.js";
+import { ApiError } from "../utils/api-error.js";
+import { asyncHandler } from "../utils/async-handler.js";
+
+export const createTask = asyncHandler(async (req, res) => {
+  const {
+    title,
+    description,
+    status,
+    attachments,
+    assignedTo,
+    userId,
+    project,
+  } = createTaskSchema.parse({
+    ...req.body,
+    userId: req.user?._id,
+    project: req.params?.projectId,
+  });
+  const task = await Task.create({
+    title,
+    description,
+    status,
+    attachments,
+    assignedTo,
+    assignedBy: userId,
+    userId,
+    project,
+  });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Task created successfully", task));
+});
+
+export const updateTaskController = asyncHandler(async (req, res) => {
+  const {
+    title,
+    description,
+    assignedTo,
+    status,
+    attachments,
+    userId,
+    taskId,
+    project,
+  } = updateTaskSchema.parse({
+    ...req.body,
+    taskId: req.params?.taskId,
+    project: req.params?.projectId,
+    userId: req.user?._id,
+  });
+  const updateTask = await Task.findByIdAndUpdate(
+    taskId,
+    {
+      title,
+      description,
+      assignedTo,
+      status,
+      attachments,
+      project,
+      assignedBy: userId,
+    },
+    { new: true, runValidators: true },
+  );
+
+  if (!updateTask) {
+    throw new ApiError(404, "Task not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Task updated successfully", updateTask));
+});
+
+export const updateTaskStatus = asyncHandler(async (req, res) => {
+  const { taskId, userId, project, status } = updateStatusSchema.parse({
+    ...req.body,
+    userId: req.user?._id,
+    project: req.params?.projectId,
+    taskId: req.params?.taskId,
+  });
+
+  const task = await Task.findOne({_id:taskId, project})
+  if(!task){
+    throw new ApiError(404, "Task not found in this project")
+  }
+  if(task.assignedTo.toString() !== userId && !req.user.isProjectAdmin){
+    throw new ApiError(403,"You are not allowed to update this task status")
+  }
+  task.status = status
+  await task.save()
+
+  return res.status(200).json(new ApiResponse(200,"Task status updated successfully", task))
+
+});
