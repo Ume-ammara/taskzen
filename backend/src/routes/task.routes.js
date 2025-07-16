@@ -6,6 +6,9 @@ import {
 import { isLoggedIn } from "../middlewares/auth.middleware.js";
 import {
   createTask,
+  deleteTask,
+  getAllTaskOfProject,
+  getTaskById,
   updateTaskController,
   updateTaskStatus,
 } from "../controllers/task.controllers.js";
@@ -19,7 +22,19 @@ taskRouter
   .route("/update-task/:projectId/:taskId")
   .patch(isLoggedIn, isProjectMember, updateTaskController);
 taskRouter
-  .route("/:projectId/task/:taskId/task-status")
-  .patch(isLoggedIn,  isProjectMember, updateTaskStatus);
+  .route("/:projectId/tasks/:taskId/task-status")
+  .patch(isLoggedIn, isProjectMember, updateTaskStatus);
+
+taskRouter
+  .route("/:projectId/tasks/:taskId/delete-task")
+  .delete(isLoggedIn, isProjectAdmin, deleteTask);
+
+taskRouter
+  .route("/:projectId/tasks/:taskId/get-task")
+  .get(isLoggedIn, isProjectMember, getTaskById);
+
+taskRouter
+  .route("/:projectId/tasks")
+  .get(isLoggedIn, isProjectMember, getAllTaskOfProject);
 
 export default taskRouter;

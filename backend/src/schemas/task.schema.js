@@ -61,7 +61,8 @@ export const updateTaskSchema = z.object({
 });
 
 export const getTaskByIdSchema = z.object({
-    taskId: z.string().trim().min(1, "Task id is required")
+    taskId: z.string().trim().min(1, "Task id is required"),
+    projectId : z.string().trim().min(1, "Project id is required")
 })
 
 export const deleteTaskSchema = z.object({
@@ -70,7 +71,7 @@ export const deleteTaskSchema = z.object({
 })
 
 export const getAllTasksOfProjectSchema = z.object({
-    taskId: z.string().trim().min(1, "Task id is required")
+    projectId : z.string().trim().min(1, "Project id is required")
 })
 
 export const updateStatusSchema = z.object({
