@@ -30,6 +30,7 @@ app.use("/api/v1/healthcheck", healthCheck)
 app.use("/api/v1/auth", router)
 app.use("/api/v1/project", projectRouter)
 app.use("/api/v1/task", taskRouter)
+app.use("/api/v1/subtask", taskRouter)
 
 
 
