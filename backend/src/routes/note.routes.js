@@ -1,16 +1,16 @@
 import { Router } from "express";
-import { isLoggedIn } from "../middlewares/auth.middleware";
+import { isLoggedIn } from "../middlewares/auth.middleware.js";
 import {
   isProjectAdmin,
   isProjectMember,
-} from "../middlewares/project.middleware";
+} from "../middlewares/project.middleware.js";
 import {
   createProjectNote,
   deleteProjectNote,
   getAllProjectNote,
   getProjectNoteById,
   updateProjectNote,
-} from "../controllers/note.controllers";
+} from "../controllers/note.controllers.js";
 const projectNoteRouter = Router();
 
 projectNoteRouter

@@ -26,8 +26,8 @@ export const createSubTask = asyncHandler(async (req, res) => {
   const subTask = await SubTask.create({
     title,
     isCompleted,
-    userId,
-    taskId,
+    task: taskId,
+    createdBy:userId,
   });
 
   return res
@@ -46,7 +46,7 @@ export const updateSubTask = asyncHandler(async (req, res) => {
     });
 
   const subTask = await SubTask.findOneAndUpdate(
-     { _id: subTaskId, taskId, project: projectId },
+     { _id: subTaskId, task:taskId  },
   { title, isCompleted  },
   { new: true, runValidators: true }
   );
@@ -67,7 +67,7 @@ export const getSubTaskById = asyncHandler(async (req, res) => {
     projectId: req.params?.projectId
   })
 
-  const subTask = await SubTask.findOne({_id :subTaskId, taskId, projectId})
+  const subTask = await SubTask.findOne({_id :subTaskId, task:taskId})
 
   if(!subTask){
     throw new ApiError(404, "Sub-task not found")
@@ -84,7 +84,7 @@ export const deleteSubTask = asyncHandler(async (req, res) => {
     projectId: req.params?.projectId
   })
 
-  const subTask = await SubTask.findOneAndDelete({subTaskId, taskId, projectId})
+  const subTask = await SubTask.findOneAndDelete({_id: subTaskId, task:taskId})
 
   if(!subTask){
     throw new ApiError(404, "Sub-task not found")

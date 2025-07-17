@@ -38,7 +38,7 @@ export const updateProjectNote = asyncHandler(async (req, res) => {
     noteId: req.params?.noteId,
   });
   const updateNote = await ProjectNote.findOneAndUpdate(
-    { project, noteId },
+    { project, _id:noteId },
     { content },
     { new: true, runValidators: true },
   );
