@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/async-handler.js";
 import { ApiError } from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { User } from "../models/user.models.js";
+import {sendEmailVerification} from "../utils/resendEmailVerification.js"
 import {
   emailVerificationMailGenContent,
   forgotPasswordMailGenContent,
@@ -17,6 +18,7 @@ import {
   verifyEmailSchema,
   resetPasswordSchema,
   updateProfileSchema,
+  resendEmailVerificationSchema,
 } from "../schemas/auth.schema.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
@@ -35,9 +37,10 @@ export const registerUser = asyncHandler(async (req, res) => {
     .createHash("sha256")
     .update(unHashedtoken)
     .digest("hex");
+    
   const tokenExpiry = Date.now() + 20 * 60 * 1000;
 
-  const emailVerificationUrl = `${process.env.FRONTEND_URL}/api/v1/auth/verifiy-email/${unHashedtoken}`;
+  const emailVerificationUrl = `${process.env.FRONTEND_URL}/auth/verify/${unHashedtoken}`;
 
   const mailGen = emailVerificationMailGenContent(
     fullname,
@@ -271,3 +274,23 @@ export const resetPassword = asyncHandler(async (req, res) => {
 
   return res.status(200).json(new ApiResponse(200, "Password reset successfully", {resetStatus: true}))
 });
+
+export const resendEmailVerification = asyncHandler(async (req, res)=>{
+const {email} = resendEmailVerificationSchema.parse(req.body)
+
+const user = await User.findOne({email})
+if(!user){
+  throw new ApiError(404, "User does not exist with this email")
+}
+
+if(user.isEmailVerified){
+  throw new ApiError(400, "User with this email is already verified.")
+}
+
+  await sendEmailVerification(user)
+
+return res.status(200).json(
+  new ApiResponse(200, "Verification email resent successfully",{email})
+)
+
+})
