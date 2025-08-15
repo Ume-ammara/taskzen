@@ -40,9 +40,9 @@ const SignUpPage = () => {
       <div className='flex  flex-col items-center justify-center h-screen'>
         <h1 className='text-3xl font-bold '>Signup successful!</h1>
         <p className='text-gray-600 mt-2'>Please check your email to verify your account.</p>
-        {/* <Link to="/auth/login" className="text-blue-500 hover:underline">
+        <Link to="/auth/login" className="text-blue-500 hover:underline">
           Log in
-        </Link> */}
+        </Link>
       </div>
     )
   }

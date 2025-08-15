@@ -203,7 +203,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   user.forgotPasswordExpiry = tokenExpiry;
   await user.save();
 
-  const passwordRestUrl = `${process.env.FRONTEND_URL}/api/v1/auth/reset-password/${unHashedtoken}`;
+  const passwordRestUrl = `${process.env.FRONTEND_URL}/auth/reset/${unHashedtoken}`;
 
   sendMail({
     email: user.email,

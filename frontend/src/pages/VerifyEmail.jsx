@@ -11,10 +11,12 @@ const VerifyEmail = () => {
   const { token } = useParams();
 
   useEffect(() => {
-    if (token) {
-      verifyEmail(token);
-    }
-  }, [token]);
+    (async () => {
+      if (token) {
+        verifyEmail(token);
+      }
+    })();
+  }, [token, verifyEmail]);
   if (isLoading)
     return (
       <>
@@ -28,20 +30,21 @@ const VerifyEmail = () => {
     return (
       <div className="flex justify-center items-center min-h-screen  px-4">
         <Card className="max-w-md w-full shadow-lg rounded-2xl border">
-          <CardContent className="flex flex-col items-center gap-4 py-10" >
-           <XCircle className="w-12 h-12 text-red-500" />
-        <p className="text-red-600 font-medium text-lg">Verification failed!</p>
-        <p className="text-gray-600 font-bold max-w-sm text-center">
-          The verification link might be expired or invalid. Please try
-          requesting a new one.
-        </p>
-        <Link to="/auth/resend-email">
-          <Button className="mt-3">Resend Verification Email</Button>
-        </Link>
+          <CardContent className="flex flex-col items-center gap-4 py-10">
+            <XCircle className="w-12 h-12 text-red-500" />
+            <p className="text-red-600 font-medium text-lg">
+              Verification failed!
+            </p>
+            <p className="text-gray-600 font-bold max-w-sm text-center">
+              The verification link might be expired or invalid. Please try
+              requesting a new one.
+            </p>
+            <Link to="/auth/resend-email">
+              <Button className="mt-3">Resend Verification Email</Button>
+            </Link>
           </CardContent>
         </Card>
-       </div>
-      
+      </div>
     );
 
   return (
@@ -65,10 +68,3 @@ const VerifyEmail = () => {
 };
 
 export default VerifyEmail;
-
-
-
-
-
- 
-      

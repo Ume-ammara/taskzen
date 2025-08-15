@@ -13,11 +13,10 @@ export const LoginUserSchema = z.object({
 })
 
 export const forgotPasswordSchema = z.object({
-    email: z.email({message:"Invalid email address"})
+    email: z.email("Invalid email address")
 })
 
 export const resetPasswordSchema = z.object({
-    token: z.string().nonempty("Token is required"),
     newPassword: z.string().trim().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().trim().min(6, "Password must be at least 6 characters")
 }).refine((data) => data.newPassword === data.confirmPassword,{

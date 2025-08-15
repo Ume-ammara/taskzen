@@ -6,6 +6,9 @@ import SignUpPage from "./pages/SignUpPage";
 import VerifyEmail from "./pages/VerifyEmail";
 import { useAuthStore } from "./store/authStore";
 import ResendEmailVerification from "./pages/resendEmailVerification";
+import ResetPassword from "./pages/ResetPassword";
+import ForgotPassword from "./pages/ForgotPassword";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const { user } = useAuthStore();
@@ -13,13 +16,17 @@ const App = () => {
   return (
     <div className="flex flex-col items-center justify-start">
       <Routes>
-
         <Route
           path="/auth/signup"
           element={!user ? <SignUpPage /> : <Navigate to={"/"} />}
         />
-        <Route path="/auth/verify/:token" element=  {<VerifyEmail />} />
-        <Route path="/auth/resend-email" element={ <ResendEmailVerification /> } />
+        <Route path="/auth/verify/:token" element={<VerifyEmail />} />
+        <Route
+          path="/auth/resend-email"
+          element={<ResendEmailVerification />}
+        />
+        <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+        <Route path="/auth/reset/:token" element={<ResetPassword />} />
         <Route
           path="/"
           element={user ? <LandingPage /> : <Navigate to={"/login"} />}
@@ -28,8 +35,8 @@ const App = () => {
           path="/auth/login"
           element={!user ? <LoginPage /> : <Navigate to={"/"} />}
         />
-        
       </Routes>
+        <Toaster position="top-center" />
     </div>
   );
 };

@@ -58,12 +58,13 @@ export const useAuthStore = create((set, get) => ({
 
   verifyEmail: async (token) => {
     try {
-      get().startLoading();
-      const res = await apiClient.get(`/auth/verify-email/${token}`);
-      console.log("verify email", res);
       set({
         error: null,
       });
+      get().startLoading();
+      const res = await apiClient.get(`/auth/verify-email/${token}`);
+      console.log("verify email", res);
+      
       console.log("verify email user" ,res.data?.data?.messages )
     } catch (error) {
      
@@ -71,9 +72,6 @@ export const useAuthStore = create((set, get) => ({
         error.response?.data?.message ||
         error?.message ||
         "Email verification failed";
-      set({
-        error: msg,
-      });
       console.log("verify email error", error)
        get().setError(msg);
     } finally {
@@ -101,6 +99,47 @@ export const useAuthStore = create((set, get) => ({
       get().stopLoading();
     }
     
+  },
+
+  forgotPassword : async(email)=>{
+    try {
+      get().startLoading()
+      const res = await apiClient.post("/auth/forgot-password", email);
+      console.log("Forgot password request successful", res.data?.message);
+      set({
+        error : null
+      });
+    } catch (error) {
+      console.error("Forgot password request failed" ,error);
+      const msg =
+        error.response?.data?.message ||
+        error?.message ||
+        "Unable to process forgot password request";
+        get().setError(msg);
+    }finally{
+      get().stopLoading();
+    }
+  },
+
+  resetPassword: async(token, data)=>{
+    try {
+      get().startLoading()
+      const res = await apiClient.post(`/auth/reset-password/${token}`, data)
+      console.log("Password reset successful", res.data?.message)
+       set({
+        error : null
+      })
+
+      return res.data?.data
+    } catch (error) {
+      const msg =
+        error.response?.data?.message ||
+        error?.message ||
+        "Unable to reset your password";
+        get().setError(msg);
+    }finally{
+      get().stopLoading()
+    }
   }
 
 }));

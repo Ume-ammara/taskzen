@@ -9,7 +9,7 @@ export const sendEmailVerification = async(user)=>{
     user.verificationTokenExpiry = tokenExpiry
     await user.save()
 
-    const emailVerificationUrl = `${process.env.FRONTEND_URL}/auth/resend-email/${unHashedtoken}`
+    const emailVerificationUrl = `${process.env.FRONTEND_URL}/auth/verify/${unHashedtoken}`
 
     try {
         await sendMail({
