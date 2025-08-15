@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Eye, EyeOff } from 'lucide-react';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Link } from 'react-router-dom';
-import {LoginUserSchema} from "../schemas/authScema"
-import { useAuthStore } from '@/store/authStore';
+import { Link } from "react-router-dom";
+import { LoginUserSchema } from "../schemas/authScema";
+import { useAuthStore } from "@/store/authStore";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const {loginUser} = useAuthStore()
+  const { loginUser } = useAuthStore();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(LoginUserSchema)
+    resolver: zodResolver(LoginUserSchema),
   });
 
-  const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
     console.log("Login Data:", data);
     try {
-      await loginUser(data)
+      await loginUser(data);
     } catch (error) {
-      console.log("Login failed", error)
+      console.log("Login failed", error);
     }
   };
 
@@ -37,8 +37,8 @@ const LoginPage = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Email */}
-          <div className='grid gap-3'>
-            <Label htmlFor = "Email">Email</Label>
+          <div className="grid gap-3">
+            <Label htmlFor="Email">Email</Label>
             <Input
               type="email"
               placeholder="Email"
@@ -46,13 +46,15 @@ const LoginPage = () => {
               className="h-12 text-lg"
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           {/* Password */}
           <div className="relative grid gap-3">
-            <Label htmlFor = "Password">Password</Label>
+            <Label htmlFor="Password">Password</Label>
             <Input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
@@ -67,8 +69,21 @@ const LoginPage = () => {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
             {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
             )}
+
+            {/* Forgot password link  */}
+
+            <div className="text-left">
+              <Link
+                to="/auth/forgot-password"
+                className="text-sm text-blue-600 hover:underline"
+              >
+                Forgot your password?
+              </Link>
+            </div>
           </div>
 
           {/* Submit Button */}
@@ -90,4 +105,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-

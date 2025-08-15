@@ -129,7 +129,6 @@ export const useAuthStore = create((set, get) => ({
        set({
         error : null
       })
-
       return res.data?.data
     } catch (error) {
       const msg =
