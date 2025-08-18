@@ -1,14 +1,18 @@
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import LandingPage from "./pages/landingPage";
+
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
-import VerifyEmail from "./pages/VerifyEmail";
+
 import { useAuthStore } from "./store/authStore";
 import ResendEmailVerification from "./pages/resendEmailVerification";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import { Toaster } from "react-hot-toast";
+import VerifyEmail from "./pages/VerifyEmail";
+import Layout from "./layouts/Layout";
+import LandingPage from "./pages/landingPage";
+import Dashboard from "./pages/Dashboard";
 
 const App = () => {
   const { user } = useAuthStore();
@@ -29,8 +33,12 @@ const App = () => {
         <Route path="/auth/reset/:token" element={<ResetPassword />} />
         <Route
           path="/"
-          element={user ? <LandingPage /> : <Navigate to={"/login"} />}
-        />
+          element={ <Layout />  }>
+             <Route index element={<LandingPage />} />
+            
+          </Route>
+         <Route path="/project/create-project" element={user ? <Dashboard /> : <Navigate to={"/auth/login"} />} />  
+        
         <Route
           path="/auth/login"
           element={!user ? <LoginPage /> : <Navigate to={"/"} />}

@@ -24,7 +24,10 @@ export const isLoggedIn = asyncHandler(async (req, res, next)=>{
     
         next()
     } catch (error) {
-        throw new ApiError(401, error?.message || "Invalid Access Token")
+       if (error?.message === "jwt expired") {
+    throw new ApiError(401, "Access token expired");  
+  }
+  throw new ApiError(401, "Invalid Access Token");
     }
 })
 

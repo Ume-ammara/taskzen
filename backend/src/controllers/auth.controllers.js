@@ -3,6 +3,7 @@ import { ApiError } from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { User } from "../models/user.models.js";
 import {sendEmailVerification} from "../utils/resendEmailVerification.js"
+
 import {
   emailVerificationMailGenContent,
   forgotPasswordMailGenContent,
@@ -128,7 +129,7 @@ export const refreshAccessToken = asyncHandler(async(req, res)=>{
   let decodeToken
 
   try {
-     decodeToken = jwt.verify(incomingRefreshToken, REFRESH_TOKEN_SECRET)
+     decodeToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
   } catch (error) {
      throw new ApiError(401, "Invalid or expired refresh token");
   }
@@ -149,14 +150,14 @@ export const refreshAccessToken = asyncHandler(async(req, res)=>{
 
   res.cookie("accessToken", newAccessToken, {
     httpOnly: true,
-    secure: isProduction,
+    secure:  process.env.NODE_ENV === "production",
     sameSite: isProduction ? "none" : "lax",
     maxAge: 15 * 60 * 1000,
   })
 
   res.cookie("refreshToken", newRefreshToken, {
     httpOnly: true,
-    secure: isProduction,
+    secure:  process.env.NODE_ENV === "production",
     sameSite: isProduction ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   })
