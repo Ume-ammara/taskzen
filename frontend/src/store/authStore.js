@@ -3,7 +3,7 @@ import { create } from "zustand";
 
 export const useAuthStore = create((set, get) => ({
   user: null,
-  isAuthenticated: false,
+  withCredentials: false,
   isLoading: false,
   error: null,
   isVerified: false,
@@ -16,17 +16,17 @@ export const useAuthStore = create((set, get) => ({
   loginUser: async (formData) => {
     try {
       get().startLoading();
-      const res = await apiClient.post("/auth/login", formData);
+      const res = await apiClient.post("/auth/login", formData, { withCredentials: true,});
       set({
         user: res.data?.data?.user ?? null,
-        isAuthenticated: true,
+       
       });
       console.log("backend data3:", res.data?.data?.user);
     } catch (error) {
       const msg =
         error.response?.data?.message || error?.message || "Login failed";
       get().setError(msg);
-      set({ user: null, isAuthenticated: false });
+      set({ user: null, withCredentials: false });
     } finally {
       get().stopLoading();
     }
@@ -35,12 +35,8 @@ export const useAuthStore = create((set, get) => ({
   signupUser: async (formData) => {
     try {
       get().startLoading();
-      const res = await apiClient.post("/auth/register", formData);
-      set({
-        user: res.data?.message?.user,
-        isAuthenticated: true,
-      });
-      console.log("User registerd sucessfully", res.data?.message?.user);
+      await apiClient.post("/auth/register", formData);
+      set({error : null})
     } catch (error) {
       const msg =
         error.response?.data?.message ||
@@ -49,7 +45,7 @@ export const useAuthStore = create((set, get) => ({
       get().setError(msg);
       set({
         user: null,
-        isAuthenticated: false,
+        withCredentials: false,
       });
     } finally {
       get().stopLoading();
@@ -139,6 +135,30 @@ export const useAuthStore = create((set, get) => ({
     }finally{
       get().stopLoading()
     }
-  }
+  },
+
+   fetchUserProfile: async () => {
+    try {
+      get().startLoading();
+      const res = await apiClient.get("/auth/profile");
+      set({
+        user: res.data?.data?.user ?? null,
+        withCredentials: true,
+      });
+      console.log("User profile fetched successfully", res.data?.data?.user);
+    } catch (error) {
+      const msg =
+        error.response?.data?.message ||
+        error?.message ||
+        "Failed to fetch user profile";
+      get().setError(msg);
+      set({
+        user: null,
+        withCredentials: false,
+      });
+    } finally {
+      get().stopLoading();
+    }
+  },
 
 }));

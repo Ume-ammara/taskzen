@@ -1,36 +1,49 @@
-import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { User, Settings, FolderKanban } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-
-const Sidebar = () => {
+export function Sidebar() {
   return (
-    <div className="w-64 bg-gray-900 text-white h-screen p-4 flex flex-col ">
-     
-      <div className="flex flex-col items-center mb-6">
-        <Avatar className="h-16 w-16 ">
-        
-          <AvatarImage src="https://github.com/shadcn.png" alt="User Avatar" />
-          
-          <AvatarFallback>S</AvatarFallback>
-        </Avatar>
-        {/* <p className="font-semibold text-lg">Sidra</p> */}
-      </div>
-
+    <aside className="w-64  bg-sidebar text-sidebar-foreground border-r border-sidebar-border flex flex-col ">
       
-      <div>
-        <ul className="space-y-3">
-          <li className="cursor-pointer hover:text-blue-400">Projects</li>
-          <li className="cursor-pointer hover:text-blue-400">Teams</li>
-        </ul>
+
+     
+      <div className="p-4 flex flex-col items-center space-y-3 border-b border-sidebar-border">
+
+       
+        <label className="relative w-16 h-16 cursor-pointer rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+          <Input type="file" className="absolute inset-0 opacity-0 cursor-pointer" />
+          <User className="w-8 h-8 text-gray-500" />
+        </label>
+        <p className="text-sm font-medium">Upload Profile</p>
       </div>
 
-      <div>
-        <ul>
-          <li className="cursor-pointer hover:text-blue-400 mt-96 ">⚙️ Settings</li>
-        </ul>
+     
+      <nav className="flex-1 p-2 space-y-1">
+      
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+        >
+          <FolderKanban className="w-4 h-4" />
+          Projects
+        </Button>
+      </nav>
+
+    
+      <div className="p-4 border-t border-sidebar-border">
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+        >
+          <Settings className="w-4 h-4" />
+          Settings
+        </Button>
       </div>
-    </div>
+    </aside>
   );
-};
+}
+
 
 export default Sidebar;
+

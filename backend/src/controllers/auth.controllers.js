@@ -70,6 +70,20 @@ export const registerUser = asyncHandler(async (req, res) => {
   );
 });
 
+export const getUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).select(
+    "-password -refreshToken",
+  );
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+  return res.status(200).json(
+    new ApiResponse(200, "User profile fetched successfully", {
+      user,
+    }),
+  );
+});
+
 export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = LoginUserSchema.parse(req.body);
 

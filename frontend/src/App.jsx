@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
@@ -13,9 +13,16 @@ import VerifyEmail from "./pages/VerifyEmail";
 import Layout from "./layouts/Layout";
 import LandingPage from "./pages/landingPage";
 import Dashboard from "./pages/Dashboard";
+import ProjectDetail from "./pages/ProjectDetail";
 
 const App = () => {
-  const { user } = useAuthStore();
+  const { user, fetchUserProfile } = useAuthStore();
+
+  useEffect(()=>{
+    if(user === null){
+      fetchUserProfile()
+    }
+  }, [fetchUserProfile , user])
 
   return (
     <div className="flex flex-col items-center justify-start">
@@ -43,6 +50,7 @@ const App = () => {
           path="/auth/login"
           element={!user ? <LoginPage /> : <Navigate to={"/"} />}
         />
+        <Route path="/project/:projectId" element={<ProjectDetail />} />
       </Routes>
         <Toaster position="top-center" />
     </div>

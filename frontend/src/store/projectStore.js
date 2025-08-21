@@ -19,15 +19,15 @@ export const useProjectStore = create((set, get) => ({
       get().startLoading();
       const res = await apiClient.post("/project/create-project", formData);
       console.log("create project ", res.data)
-      // set((state) => ({
-      //   projects: state.projects
-      //     ? [...state.projects, res.data?.data?.project]
-      //     : [res.data?.data?.project],
-      //   project: res.data?.data?.project,
+      set((state) => ({
+        projects: state.projects
+          ? [...state.projects, res.data?.data?.project]
+          : [res.data?.data?.project],
+        project: res.data?.data?.project,
         
         
-      // }));
-      // return res.data?.data?.project;
+      }));
+      return res.data?.data?.project;
     } catch (error) {
      
       const errResponse = error.response?.data;
@@ -47,5 +47,41 @@ export const useProjectStore = create((set, get) => ({
     }
   },
 
+  getAllProjects : async()=>{
+   try {
+     get().startLoading()
+     const res = await apiClient.get("/project/get-all-project")
+     console.log("Fetched projects:", res.data);
+     set({projects: res.data?.data})
+   } catch (error) {
+      console.log("Failed to fetch projects" , error)
+      set({
+        projects: null,
+        error : "Failed to fetch projects"
+      })
+   }finally{
+    get().stopLoading()
+   }
+  },
+
+  getProject : async(projectId)=>{
+    try {
+      get().startLoading()
+      const res = await apiClient.get(`/project/get-project/${projectId}`)
+      console.log("fetch project by id", res.data?.data)
+      set({
+        project : res.data.data
+
+      })
+    } catch (error) {
+      console.log("Failed to fetch project by id" ,error)
+      set({
+        project : null,
+        error : "Failed to fetch project by id"
+      })
+    }finally{
+      get().stopLoading()
+    }
+  }
   
 }));

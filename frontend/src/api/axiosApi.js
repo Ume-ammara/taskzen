@@ -1,64 +1,6 @@
-// import axios from "axios"; 
-
-// const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
-
-// const apiClient = axios.create({
-//   baseURL: `${backendUrl}/api/v1`,
-//   withCredentials: true,
-//   headers: {
-//     "Content-Type": "application/json"
-//   }
-// });
-
-// const refreshClient = axios.create({
-//   baseURL: `${backendUrl}/api/v1`,
-//   withCredentials: true,
-// });
-
-// axiosApi.interceptors.request.use(
-//   (config) => {
-//     console.log("request config.url :", config.url);
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
-
-// axiosApi.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const status = error?.response?.status;
-//     const message = error?.response?.data?.message;
-//     const originalRequest = error.config;
-
-//     const isTokenExpired =
-//       status === 401 &&
-//       message === "Access token expired" &&
-//       !originalRequest._retry;
-
-//     if (isTokenExpired) {
-//       originalRequest._retry = true;
-
-//       try {
-//         await refreshClient.post("/auth/refresh-token");
-//         return apiClient(originalRequest);
-//       } catch (refreshError) {
-//         window.location.href = "/auth/login";
-//         return Promise.reject(refreshError);
-//       }
-//     }
-
-//     return Promise.reject(error); 
-//   }
-// );
-
-// export { apiClient  };
-
-
 import axios from "axios";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000";
+const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
 const apiClient = axios.create({
   baseURL: `${backendUrl}/api/v1`,
@@ -73,10 +15,9 @@ const refreshClient = axios.create({
   withCredentials: true,
 });
 
-let failedRequests = [];
 let isRefreshing = false;
+let failedQueue = [];
 
-// Request interceptor
 apiClient.interceptors.request.use(
   (config) => {
     console.log("Request URL:", `${config.baseURL}${config.url}`);
@@ -85,43 +26,43 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const status = error?.response?.status;
-    const message = error?.response?.data?.message;
     const originalRequest = error.config;
 
-    const isTokenExpired =
-      status === 401 &&
-      message === "Access token expired" &&
+    const isAccessTokenMissing =
+      error?.response?.status === 401 &&
+      error.response.data?.message === "Unauthorized request" &&a
       !originalRequest._retry;
-
-    if (isTokenExpired) {
-      originalRequest._retry = true;
-
-      if (!isRefreshing) {
-        isRefreshing = true;
-        try {
-          await refreshClient.post("/auth/refresh-token");
-
-          failedRequests.forEach((cb) => cb());
-          failedRequests = [];
-        } catch (refreshError) {
-          failedRequests = [];
-          window.location.href = "/auth/login";
-          return Promise.reject(refreshError);
-        } finally {
-          isRefreshing = false;
-        }
+   
+      
+    if (isAccessTokenMissing) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(() => apiClient(originalRequest));
       }
 
-      return new Promise((resolve) => {
-        failedRequests.push(() => {
-          resolve(apiClient(originalRequest));
-        });
-      });
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        await refreshClient.get("/auth/refresh-token");
+
+        failedQueue.forEach(({ resolve }) => resolve());
+        failedQueue = [];
+
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        failedQueue.forEach(({ reject }) => reject(refreshError));
+        failedQueue = [];
+
+        window.location.href = "/auth/login";
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
     }
 
     return Promise.reject(error);
@@ -129,3 +70,4 @@ apiClient.interceptors.response.use(
 );
 
 export { apiClient };
+
