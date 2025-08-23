@@ -115,9 +115,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   }
   const accessToken = user.generateAccessToken();
   const refreshToken = user.generateRefreshToken();
- if(refreshToken){
-    throw new ApiError(401, "User already logged in")
-  }
+ 
   const isProduction = process.env.NODE_ENV === "production";
 
   const refreshCookieOptions = {
