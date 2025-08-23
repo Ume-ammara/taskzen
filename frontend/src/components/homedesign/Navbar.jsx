@@ -1,28 +1,15 @@
 import React, { useState } from "react";
-import { Bell, Search, User } from "lucide-react";
+import { Bell,  User } from "lucide-react";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 const Navbar = () => {
   return (
-    <header className=" left-0 w-full border-b border-sidebar-border shadow-sm px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+    <header className=" left-0 w-full border-b border-sidebar-border shadow-sm px-6 py-3 flex items-center justify-around sticky top-0 z-50">
       
       {/* Left (Logo / Title) */}
       <div className="flex items-center gap-2">
         <span className="text-2xl font-bold text-sidebar-foreground">Taskzen</span>
-      </div>
-
-      {/* Center (Search) */}
-      <div className="flex-1 flex justify-center">
-        <div className="relative w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-sidebar-foreground/50 h-5 w-5" />
-          <Input
-            type="text"
-            placeholder="Search projects..."
-            className="w-full pl-10 rounded-full bg-sidebar-accent border-none focus:ring-2 focus:ring-sidebar-accent-foreground text-sidebar-foreground"
-          />
-        </div>
       </div>
 
       {/* Right (Notifications + User) */}

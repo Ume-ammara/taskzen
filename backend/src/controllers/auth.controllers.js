@@ -88,6 +88,23 @@ export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = LoginUserSchema.parse(req.body);
 
   console.log("user login", req.body);
+
+  const refreshTokenFromCookie = req.cookies?.refreshToken;
+  if (refreshTokenFromCookie) {
+    try {
+      const decoded = jwt.verify(
+        refreshTokenFromCookie,
+        process.env.REFRESH_TOKEN_SECRET
+      );
+      if (decoded) {
+        throw new ApiError(401, "User already logged in");
+      }
+    } catch (err) {
+      // agar token expired/invalid hai to ignore kar do aur login continue hone do
+    }
+  }
+
+
   const user = await User.findOne({ email });
   if (!user) {
     throw new ApiError(404, "user dose not exeit with this email");
@@ -96,14 +113,11 @@ export const loginUser = asyncHandler(async (req, res) => {
   if (!isPasswordCorrect) {
     throw new ApiError(401, "Invalid email or password");
   }
-
-  if (!user.isEmailVerified) {
-    throw new ApiError(401, "please  verify your email");
-  }
-
   const accessToken = user.generateAccessToken();
   const refreshToken = user.generateRefreshToken();
-
+ if(refreshToken){
+    throw new ApiError(401, "User already logged in")
+  }
   const isProduction = process.env.NODE_ENV === "production";
 
   const refreshCookieOptions = {
@@ -120,7 +134,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     maxAge: 15 * 60 * 1000,
   };
 
-  //  Set cookies
+ 
   res.cookie("refreshToken", refreshToken, refreshCookieOptions);
   res.cookie("accessToken", accessToken, accessCookieOptions);
 
