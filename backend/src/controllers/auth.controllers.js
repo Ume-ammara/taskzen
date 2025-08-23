@@ -89,22 +89,6 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   console.log("user login", req.body);
 
-  const refreshTokenFromCookie = req.cookies?.refreshToken;
-  if (refreshTokenFromCookie) {
-    try {
-      const decoded = jwt.verify(
-        refreshTokenFromCookie,
-        process.env.REFRESH_TOKEN_SECRET
-      );
-      if (decoded) {
-        throw new ApiError(401, "User already logged in");
-      }
-    } catch (err) {
-      // agar token expired/invalid hai to ignore kar do aur login continue hone do
-    }
-  }
-
-
   const user = await User.findOne({ email });
   if (!user) {
     throw new ApiError(404, "user dose not exeit with this email");
