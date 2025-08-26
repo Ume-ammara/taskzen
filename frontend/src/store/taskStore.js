@@ -1,7 +1,7 @@
 import {create} from "zustand"
 import { apiClient } from "@/api/axiosApi"
 
-export const taskStore = create((set, get)=>({
+export const useTaskStore = create((set, get)=>({
     tasks : null,
     task : null,
     isLoading : false,
@@ -12,8 +12,10 @@ export const taskStore = create((set, get)=>({
         try {
             set({isLoading : true, error: null})
             const res = await apiClient.get(`/task/${projectId}/tasks`)
+            console.log("Task fetched successfully" , res.data.data?.tasks)
             set({
-                tasks: res.data.data
+                tasks: res.data.data?.tasks,
+                error: null
             })
         } catch (error) {
             console.error("could not fetch tasks", error)
@@ -23,14 +25,14 @@ export const taskStore = create((set, get)=>({
         }
     },
 
-    createTask : async(projectId)=>{
+    createTask : async(projectId, taskData)=>{
        try {
          set({isLoading : true, error : null})
-         const res = await apiClient.post(`/create-task/${projectId}`)
+         const res = await apiClient.post(`/task/create-task/${projectId}`,taskData)
          console.log("Task created successfully", res.data?.data)
-         set({
-             tasks: [...get().tasks, res.data?.data]
-         })
+         set((state)=>({
+             tasks: state.tasks ? [...state.tasks, res.data?.data] :[res.data?.data]
+         }))
        } catch (error) {
         console.log("Task creation failed", error)
         set({
@@ -39,5 +41,6 @@ export const taskStore = create((set, get)=>({
        }finally{
          set({isLoading : false})
        }
-    }
+    }, 
+    
 }))

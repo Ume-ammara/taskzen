@@ -41,3 +41,7 @@ export const removeMemberSchema = z.object({
     email: z.string().trim().email("Email is required"),
 })
 
+export const getAllProjectMembersSchema = z.object({
+     projectId: z.string().trim().nonempty("Project id is required"),
+})
+

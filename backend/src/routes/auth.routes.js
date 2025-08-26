@@ -21,7 +21,7 @@ router.route("/profile").get(isLoggedIn, getUserProfile);
 router.route("/verify-email/:token").get(verifiyUserEmail);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password/:token").post(resetPassword);
-router.route("/refresh-token").post(refreshAccessToken)
+router.route("/refresh-token").get(refreshAccessToken)
 router.route("/logout").get(isLoggedIn, logoutUser)
 router.route("/resend-email").post(resendEmailVerification)
 

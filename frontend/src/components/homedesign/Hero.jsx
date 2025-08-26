@@ -17,7 +17,7 @@ const Hero = () => {
           onClick={() => navigate("/project/create-project")}
           className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg text-lg shadow-lg"
         >
-          Get Started
+          Go To Dashboard
         </button>
         <button
           onClick={() => navigate("/auth/login")}

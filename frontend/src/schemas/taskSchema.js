@@ -1,8 +1,6 @@
 import z from "zod"
 
-export const createTaskSchema = z.object({
-  userId: z.string().trim().min(1, "User id is required"),
-  project: z.string().trim().min(1, "project id is required"),
+export const taskSchema = z.object({
   title: z
     .string()
     .trim()
@@ -13,18 +11,18 @@ export const createTaskSchema = z.object({
     .trim()
     .min(50, "Description must be at least 50 characters")
     .max(150, "Description must be at most 150 characters"),
-  assignedTo: z.string().trim().min("User id is required"),
 
-  status: z.enum(AvaibleTaskStatus).default("todo"),
+  status:  z.enum(["todo", "in_progress", "done"]),
+  priority: z.enum(["low", "medium", "high"]).default("low"),
+  dueDate: z.preprocess((val) => {
+    if (typeof val === "string" || typeof val === "number")
+      return new Date(val);
+    return val;
+  }, z.date().optional()),
+  labels: z.array(z.string()).default([]),
+  attachments: z.any().optional(),
+  assignedTo: z.string().optional(),
+  assignedBy: z.string().optional(),
+  project: z.string().optional(),
 
-  attachments: z.array(
-    z.object({
-      url: z.url("Please provide a valid URL").optional(),
-      mimetype: z
-        .string()
-        .min(5, "Mimetype must be a valid file type")
-        .optional(),
-      size: z.number().optional(),
-    }),
-  ),
 });

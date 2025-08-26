@@ -14,6 +14,7 @@ import Layout from "./layouts/Layout";
 import LandingPage from "./pages/landingPage";
 import Dashboard from "./pages/Dashboard";
 import ProjectDetail from "./pages/ProjectDetail";
+import Task from "./components/task/Task";
 
 const App = () => {
   const { user, fetchUserProfile } = useAuthStore();
@@ -41,7 +42,7 @@ const App = () => {
         <Route
           path="/"
           element={ <Layout />  }>
-             <Route index element={<LandingPage />} />
+             <Route index element={  <LandingPage /> } />
             
           </Route>
          <Route path="/project/create-project" element={user ? <Dashboard /> : <Navigate to={"/auth/login"} />} />  
@@ -51,6 +52,7 @@ const App = () => {
           element={!user ? <LoginPage /> : <Navigate to={"/"} />}
         />
         <Route path="/project/:projectId" element={<ProjectDetail />} />
+        <Route path="/create-task/:projectId/" element={<Task />} />
       </Routes>
         <Toaster position="top-center" />
     </div>

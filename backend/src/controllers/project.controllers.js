@@ -2,6 +2,7 @@ import { Project } from "../models/project.models.js";
 import {
   addMemberToProject,
   createProjectSchema,
+  getAllProjectMembersSchema,
   getProjectByIdSchema,
   removeMemberSchema,
   roleUpdateSchema,
@@ -132,6 +133,19 @@ export const addMemberController = asyncHandler(async (req, res) => {
   }
   return res.status(200).json(new ApiResponse(200, "Member added successfully", projectMember));
 });
+
+export const getAllProjectMembers = asyncHandler(async(req, res)=>{
+   const {projectId} = getAllProjectMembersSchema.parse({projectId : req.params.projectId})
+
+   const members = await ProjectMember.find({project :projectId})
+   .populate("user", "username email")
+   if(!members || members.length === 0){
+    throw new ApiError(404, "Member not found ")
+   }
+
+   return res.status(200).json(new ApiResponse(200, "Members fetched successfully" , {members}))
+
+})
 
 export const roleUpdate = asyncHandler(async (req, res) => {
   const { role , memberId} = roleUpdateSchema.parse({

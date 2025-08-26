@@ -3,6 +3,7 @@ import {
   addMemberController,
   createProject,
   deleteProject,
+  getAllProjectMembers,
   getAllProjects,
   getProjectById,
   removeProjectMember,
@@ -10,7 +11,7 @@ import {
   updateProject,
 } from "../controllers/project.controllers.js";
 
-import { isProjectAdmin } from "../middlewares/project.middleware.js";
+import { isProjectAdmin, isProjectMember } from "../middlewares/project.middleware.js";
 import { isLoggedIn } from "../middlewares/auth.middleware.js";
 
 const projectRouter = Router();
@@ -24,7 +25,7 @@ projectRouter
 projectRouter
   .route("/:projectId/add-member")
   .post(isLoggedIn, isProjectAdmin, addMemberController);
-
+projectRouter.route("/:projectId/members").get(isLoggedIn, isProjectMember, getAllProjectMembers)
 projectRouter
   .route("/:projectId/members/:memberId")
   .patch(isLoggedIn, isProjectAdmin, roleUpdate);

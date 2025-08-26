@@ -1,7 +1,14 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTaskStore } from "@/store/taskStore";
 
 const KanbanView = () => {
+
+  const {tasks, fetchAllTask} = useTaskStore()
+
+
+
+
   const columns = [
     { id: "todo", title: "To Do", tasks: ["Task 1", "Task 2"] },
     { id: "progress", title: "In Progress", tasks: ["Task 3"] },
