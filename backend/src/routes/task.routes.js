@@ -22,7 +22,7 @@ taskRouter
   .route("/update-task/:projectId/:taskId")
   .patch(isLoggedIn, isProjectMember, updateTaskController);
 taskRouter
-  .route("/:projectId/tasks/:taskId/task-status")
+  .route("/:projectId/tasks/:taskId")
   .patch(isLoggedIn, isProjectMember, updateTaskStatus);
 
 taskRouter

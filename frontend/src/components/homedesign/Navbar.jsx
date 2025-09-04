@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Bell,  User } from "lucide-react";
+import { Bell, User } from "lucide-react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 const Navbar = () => {
   return (
-    <header className=" left-0 w-full border-b border-sidebar-border shadow-sm px-6 py-3 flex items-center justify-around sticky top-0 z-50">
-      
+    <header className=" left-0 w-full border-b border-sidebar-border shadow-sm px-6 py-3 flex items-center justify-between  top-0 z-50">
+
       {/* Left (Logo / Title) */}
       <div className="flex items-center gap-2">
         <span className="text-2xl font-bold text-sidebar-foreground">Taskzen</span>

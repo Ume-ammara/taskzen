@@ -81,12 +81,12 @@ const ProjectDetail = () => {
           {activeView === "kanban" && <KanbanView />}
           {activeView === "list" && <ListView />}
           {activeView === "table" && <TableView />}
-        </div>
-
-        {/* Task Section */}
-        <div className="w-1/4 mt-6 p-4 border-l overflow-y-auto">
+           <div>
           <Task />
         </div>
+        </div>
+       
+        
       </div>
     </div>
   );

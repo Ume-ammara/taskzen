@@ -31,6 +31,10 @@ const taskSchema = new Schema({
         enum : AvaibleTaskStatus,
         default : TaskStatusEnum.TODO
     },
+    dueDate:{
+        type: Date,
+        default : null
+    },
     attachments: {
         type : [
             {

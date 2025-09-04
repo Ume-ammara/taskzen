@@ -9,6 +9,11 @@ export const createTaskSchema = z.object({
     .trim()
     .min(5, "Title must be at least 5 characters")
     .max(50, "Title must be at most 50 characters"),
+  dueDate: z.preprocess((val) => {
+    if (typeof val === "string" || typeof val === "number") {
+      return new Date(val);
+    }
+  }, z.date().optional()),
   description: z
     .string()
     .trim()
@@ -61,22 +66,22 @@ export const updateTaskSchema = z.object({
 });
 
 export const getTaskByIdSchema = z.object({
-    taskId: z.string().trim().min(1, "Task id is required"),
-    projectId : z.string().trim().min(1, "Project id is required")
-})
+  taskId: z.string().trim().min(1, "Task id is required"),
+  projectId: z.string().trim().min(1, "Project id is required"),
+});
 
 export const deleteTaskSchema = z.object({
-    taskId: z.string().trim().min(1, "Task id is required"),
-    projectId : z.string().trim().min(1, "Project id is required")
-})
+  taskId: z.string().trim().min(1, "Task id is required"),
+  projectId: z.string().trim().min(1, "Project id is required"),
+});
 
 export const getAllTasksOfProjectSchema = z.object({
-    projectId : z.string().trim().min(1, "Project id is required")
-})
+  projectId: z.string().trim().min(1, "Project id is required"),
+});
 
 export const updateStatusSchema = z.object({
   taskId: z.string().trim().min(1, "Task id is required"),
   userId: z.string().trim().min(1, "User id is required"),
   project: z.string().trim().min(1, "project id is required"),
   status: z.enum(AvaibleTaskStatus).default("todo"),
-})
+});
