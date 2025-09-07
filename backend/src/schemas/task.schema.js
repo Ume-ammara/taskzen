@@ -19,7 +19,7 @@ export const createTaskSchema = z.object({
     .trim()
     .min(50, "Description must be at least 50 characters")
     .max(150, "Description must be at most 150 characters"),
-  assignedTo: z.string().trim().min("User id is required"),
+  assignedTo: z.string().min("User id is required"),
 
   status: z.enum(AvaibleTaskStatus).default("todo"),
 

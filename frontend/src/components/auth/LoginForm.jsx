@@ -34,9 +34,13 @@ const LoginForm = () => {
   return (
     <div >
       <div className="text-2xl font-bold mb-6 text-center">
-        <h1 className="text-3xl font-bold mb-8 text-center">Login</h1>
+        <div className="text-center space-y-2 mb-2">
+          <h1 className="text-3xl font-bold ">Welcome Back </h1>
+          <p className="text-lg">Login to continue to your account</p>
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+
           {/* Email */}
           <div className="grid gap-3">
             <Label htmlFor="Email">Email</Label>
@@ -56,19 +60,23 @@ const LoginForm = () => {
           {/* Password */}
           <div className="relative grid gap-3">
             <Label htmlFor="Password">Password</Label>
-            <Input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              {...register("password")}
-              className="h-12 text-lg pr-10"
-            />
-            <button
-              type="button"
-              className="absolute inset-y-0 top-1/2 right-3 flex items-center text-gray-500"
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                {...register("password")}
+                className="h-12 text-lg pr-10"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.password.message}
@@ -76,7 +84,6 @@ const LoginForm = () => {
             )}
 
             {/* Forgot password link  */}
-
             <div className="text-left">
               <Link
                 to="/auth/forgot-password"

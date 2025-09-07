@@ -27,6 +27,7 @@ export const createTask = asyncHandler(async (req, res) => {
     userId: req.user?._id,
     project: req.params?.projectId,
   });
+
   const task = await Task.create({
     title,
     description,
@@ -108,9 +109,8 @@ export const updateTaskStatus = asyncHandler(async (req, res) => {
 
   task.status = status;
   const updateTask = await task.save();
-  await updateTask
-    .populate("assignedTo", "fullname username ")
-    .populate("assignedBy", "fullname username ");
+  await updateTask.populate("assignedTo", "fullname username ");
+  await updateTask.populate("assignedBy", "fullname username ");
   return res
     .status(200)
     .json(new ApiResponse(200, "Task status updated successfully", updateTask));

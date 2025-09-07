@@ -1,8 +1,8 @@
 import React from "react";
-// import { Checkbox } from "@/components/ui/checkbox";
 
 const ListView = () => {
   const tasks = ["Design UI", "Build API", "Write Docs"];
+  
 
   return (
     <div className="space-y-3">

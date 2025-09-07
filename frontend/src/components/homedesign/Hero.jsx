@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { FaGithub } from "react-icons/fa"
+import { ArrowRight } from "lucide-react"
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -15,16 +17,20 @@ const Hero = () => {
       <div className="flex justify-center gap-4">
         <button
           onClick={() => navigate("/project/create-project")}
-          className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg text-lg shadow-lg"
+          className=" flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg text-lg shadow-lg"
         >
           Go To Dashboard
+          <ArrowRight size={21} />
         </button>
-        <button
-          onClick={() => navigate("/auth/login")}
-          className="border border-muted-foreground text-foreground hover:bg-secondary/50 px-6 py-3 rounded-lg text-lg"
+        <a
+          href="https://github.com/Ume-ammara/taskzen"
+          target="_blank"
+          rel="noopener noreferrer"
+          className=" flex items-center border border-muted-foreground text-foreground hover:bg-secondary/50 px-6 py-3 rounded-lg text-lg gap-2 text-center"
         >
-          Login
-        </button>
+          <FaGithub size={21} />
+          <span className="leading-none">View Code</span>
+        </a>
       </div>
     </section>
   );

@@ -48,6 +48,7 @@ export const useTaskStore = create((set, get) => ({
   createTask: async (projectId, taskData) => {
     try {
       set({ isLoading: true, error: null });
+
       const res = await apiClient.post(
         `/task/create-task/${projectId}`,
         taskData
