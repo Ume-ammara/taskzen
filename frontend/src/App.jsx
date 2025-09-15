@@ -5,7 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 
 import { useAuthStore } from "./store/authStore";
-import ResendEmailVerification from "./pages/resendEmailVerification";
+import { ResendEmailVerification } from "./pages/resendEmailVerification";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import { Toaster } from "react-hot-toast";
@@ -19,11 +19,11 @@ import Task from "./components/task/Task";
 const App = () => {
   const { user, fetchUserProfile } = useAuthStore();
 
-  useEffect(()=>{
-    if(user === null){
+  useEffect(() => {
+    if (user === null) {
       fetchUserProfile()
     }
-  }, [fetchUserProfile , user])
+  }, [fetchUserProfile, user])
 
   return (
     <div className="flex flex-col items-center justify-start">
@@ -41,12 +41,12 @@ const App = () => {
         <Route path="/auth/reset/:token" element={<ResetPassword />} />
         <Route
           path="/"
-          element={ <Layout />  }>
-             <Route index element={  <LandingPage /> } />
-            
-          </Route>
-         <Route path="/project/create-project" element={user ? <Dashboard /> : <Navigate to={"/auth/login"} />} />  
-        
+          element={<Layout />}>
+          <Route index element={<LandingPage />} />
+
+        </Route>
+        <Route path="/project/create-project" element={user ? <Dashboard /> : <Navigate to={"/auth/login"} />} />
+
         <Route
           path="/auth/login"
           element={!user ? <LoginPage /> : <Navigate to={"/"} />}
@@ -54,7 +54,7 @@ const App = () => {
         <Route path="/project/:projectId" element={<ProjectDetail />} />
         <Route path="/create-task/:projectId/" element={<Task />} />
       </Routes>
-        <Toaster position="top-center" />
+      <Toaster position="top-center" />
     </div>
   );
 };

@@ -9,4 +9,4 @@ const ResendEmailVerification = () => {
   )
 }
 
-export default ResendEmailVerification
+export { ResendEmailVerification }
