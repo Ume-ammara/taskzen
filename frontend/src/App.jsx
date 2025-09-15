@@ -5,7 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 
 import { useAuthStore } from "./store/authStore";
-import { ResendEmailVerification } from "./pages/resendEmailVerification";
+
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import { Toaster } from "react-hot-toast";
@@ -15,6 +15,7 @@ import LandingPage from "./pages/landingPage";
 import Dashboard from "./pages/Dashboard";
 import ProjectDetail from "./pages/ProjectDetail";
 import Task from "./components/task/Task";
+import { ResendEmailVerification } from "./pages/ResendEmailVerification";
 
 const App = () => {
   const { user, fetchUserProfile } = useAuthStore();

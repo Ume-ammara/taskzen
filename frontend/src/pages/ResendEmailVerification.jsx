@@ -1,5 +1,5 @@
 import ResendEmailVerificationForm from '@/components/auth/ResendEmailVerificationForm'
-import React from 'react'
+
 
 const ResendEmailVerification = () => {
   return (
