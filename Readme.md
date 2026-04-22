@@ -15,9 +15,9 @@
 
 ## Tech Stack
 
-- Frontend: Next.js, React, Tailwind CSS
+- Frontend: React, Tailwind CSS
 - Backend: Node.js, Express.js
-- Database: PostgreSQL, Prisma
+- Database: mongoDB , Mongoose
 
 ---
 
