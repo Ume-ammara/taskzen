@@ -37,7 +37,7 @@ const App = () => {
     if (!isAuthPage) {
       fetchUserProfile();
     }
-  }, [])
+  }, [window.location.pathname])
 
   if (isLoading) {
     return (
