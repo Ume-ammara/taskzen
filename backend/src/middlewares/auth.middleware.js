@@ -28,9 +28,6 @@ import jwt from "jsonwebtoken";
 // });
 
 // ✅ Fixed middleware - remove the refreshToken check entirely
-import { ApiError } from "../utils/api-error.js";
-import { asyncHandler } from "../utils/async-handler.js";
-import jwt from "jsonwebtoken";
 
 export const isLoggedIn = asyncHandler(async (req, res, next) => {
   try {
