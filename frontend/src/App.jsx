@@ -27,7 +27,7 @@ const AUTH_ROUTES = [
 ];
 
 const App = () => {
-  const { user, fetchUserProfile } = useAuthStore();
+  const { user, fetchUserProfile, isLoading } = useAuthStore();
 
   useEffect(() => {
     const isAuthPage = AUTH_ROUTES.some((route) =>
