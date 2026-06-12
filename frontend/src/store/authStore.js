@@ -12,14 +12,14 @@ export const useAuthStore = create((set, get) => ({
   stopLoading: () => set({ isLoading: false }),
   setError: (msg) => set({ error: msg }),
 
-
   loginUser: async (formData) => {
     try {
       get().startLoading();
-      const res = await apiClient.post("/auth/login", formData, { withCredentials: true,});
+      const res = await apiClient.post("/auth/login", formData, {
+        withCredentials: true,
+      });
       set({
         user: res.data?.data?.user ?? null,
-       
       });
       console.log("backend data3:", res.data?.data?.user);
     } catch (error) {
@@ -36,7 +36,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       get().startLoading();
       await apiClient.post("/auth/register", formData);
-      set({error : null})
+      set({ error: null });
     } catch (error) {
       const msg =
         error.response?.data?.message ||
@@ -60,84 +60,82 @@ export const useAuthStore = create((set, get) => ({
       get().startLoading();
       const res = await apiClient.get(`/auth/verify-email/${token}`);
       console.log("verify email", res);
-      
-      console.log("verify email user" ,res.data?.data?.messages )
+
+      console.log("verify email user", res.data?.data?.messages);
     } catch (error) {
-     
       const msg =
         error.response?.data?.message ||
         error?.message ||
         "Email verification failed";
-      console.log("verify email error", error)
-       get().setError(msg);
+      console.log("verify email error", error);
+      get().setError(msg);
     } finally {
       get().stopLoading();
     }
   },
 
-  resendEmailVerification: async(email) =>{
+  resendEmailVerification: async (email) => {
     try {
-      get().startLoading()
-      const res = await apiClient.post("/auth/resend-email", {email})
-      
-      console.log("Verification email sent:", res.data.message)
+      get().startLoading();
+      const res = await apiClient.post("/auth/resend-email", { email });
+
+      console.log("Verification email sent:", res.data.message);
       set({
-        error : null
-      })
+        error: null,
+      });
     } catch (error) {
-      console.log("Failed to resend email verification" ,error)
+      console.log("Failed to resend email verification", error);
       const msg =
         error.response?.data?.message ||
         error?.message ||
         "Unable to resend verification email";
-        get().setError(msg);
-    }finally{
+      get().setError(msg);
+    } finally {
       get().stopLoading();
     }
-    
   },
 
-  forgotPassword : async(email)=>{
+  forgotPassword: async (email) => {
     try {
-      get().startLoading()
+      get().startLoading();
       const res = await apiClient.post("/auth/forgot-password", email);
       console.log("Forgot password request successful", res.data?.message);
       set({
-        error : null
+        error: null,
       });
     } catch (error) {
-      console.error("Forgot password request failed" ,error);
+      console.error("Forgot password request failed", error);
       const msg =
         error.response?.data?.message ||
         error?.message ||
         "Unable to process forgot password request";
-        get().setError(msg);
-    }finally{
+      get().setError(msg);
+    } finally {
       get().stopLoading();
     }
   },
 
-  resetPassword: async(token, data)=>{
+  resetPassword: async (token, data) => {
     try {
-      get().startLoading()
-      const res = await apiClient.post(`/auth/reset-password/${token}`, data)
-      console.log("Password reset successful", res.data?.message)
-       set({
-        error : null
-      })
-      return res.data?.data
+      get().startLoading();
+      const res = await apiClient.post(`/auth/reset-password/${token}`, data);
+      console.log("Password reset successful", res.data?.message);
+      set({
+        error: null,
+      });
+      return res.data?.data;
     } catch (error) {
       const msg =
         error.response?.data?.message ||
         error?.message ||
         "Unable to reset your password";
-        get().setError(msg);
-    }finally{
-      get().stopLoading()
+      get().setError(msg);
+    } finally {
+      get().stopLoading();
     }
   },
 
-   fetchUserProfile: async () => {
+  fetchUserProfile: async () => {
     try {
       get().startLoading();
       const res = await apiClient.get("/auth/profile");
@@ -147,18 +145,16 @@ export const useAuthStore = create((set, get) => ({
       });
       console.log("User profile fetched successfully", res.data?.data?.user);
     } catch (error) {
-      const msg =
-        error.response?.data?.message ||
-        error?.message ||
-        "Failed to fetch user profile";
-      get().setError(msg);
-      set({
-        user: null,
-        withCredentials: false,
-      });
+      if (error.response?.status !== 401) {
+        const msg =
+          error.response?.data?.message ||
+          error?.message ||
+          "Failed to fetch user profile";
+        get().setError(msg);
+      }
+      set({ user: null });
     } finally {
       get().stopLoading();
     }
   },
-
 }));

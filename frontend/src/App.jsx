@@ -17,14 +17,35 @@ import ProjectDetail from "./pages/ProjectDetail";
 import Task from "./components/task/Task";
 import { ResendEmailVerification } from "./pages/ResendEmailVerification";
 
+const AUTH_ROUTES = [
+  "/auth/login",
+  "/auth/signup",
+  "/auth/verify",
+  "/auth/forgot-password",
+  "/auth/reset",
+  "/auth/resend-email",
+];
+
 const App = () => {
   const { user, fetchUserProfile } = useAuthStore();
 
   useEffect(() => {
-    if (user === null) {
-      fetchUserProfile()
+    const isAuthPage = AUTH_ROUTES.some((route) =>
+      window.location.pathname.startsWith(route)
+    );
+
+    if (!isAuthPage) {
+      fetchUserProfile();
     }
-  }, [fetchUserProfile, user])
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-start">
