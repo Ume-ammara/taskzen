@@ -3,10 +3,8 @@ import { create } from "zustand";
 
 export const useAuthStore = create((set, get) => ({
   user: null,
-  withCredentials: false,
   isLoading: false,
   error: null,
-  isVerified: false,
 
   startLoading: () => set({ isLoading: true, error: null }),
   stopLoading: () => set({ isLoading: false }),
@@ -15,9 +13,7 @@ export const useAuthStore = create((set, get) => ({
   loginUser: async (formData) => {
     try {
       get().startLoading();
-      const res = await apiClient.post("/auth/login", formData, {
-        withCredentials: true,
-      });
+      const res = await apiClient.post("/auth/login", formData, {});
       set({
         user: res.data?.data?.user ?? null,
       });
@@ -26,7 +22,7 @@ export const useAuthStore = create((set, get) => ({
       const msg =
         error.response?.data?.message || error?.message || "Login failed";
       get().setError(msg);
-      set({ user: null, withCredentials: false });
+      set({ user: null });
     } finally {
       get().stopLoading();
     }
@@ -45,7 +41,6 @@ export const useAuthStore = create((set, get) => ({
       get().setError(msg);
       set({
         user: null,
-        withCredentials: false,
       });
     } finally {
       get().stopLoading();
@@ -141,7 +136,6 @@ export const useAuthStore = create((set, get) => ({
       const res = await apiClient.get("/auth/profile");
       set({
         user: res.data?.data?.user ?? null,
-        withCredentials: true,
       });
       console.log("User profile fetched successfully", res.data?.data?.user);
     } catch (error) {
