@@ -1,4 +1,4 @@
-import {  X, CalendarDays, Plus } from "lucide-react";
+import { X, CalendarDays, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
@@ -76,6 +76,7 @@ const Task = () => {
   }, [open, reset]);
 
   const onSubmit = async (data) => {
+    console.log("task Dataa", data)
     const taskData = {
       title: data.title,
       description: data.description,
@@ -85,10 +86,10 @@ const Task = () => {
       labels,
       attachments: data.attachments
         ? Array.from(data.attachments).map((file) => ({
-            filename: file.name,
-            mimetype: file.type,
-            size: file.size,
-          }))
+          filename: file.name,
+          mimetype: file.type,
+          size: file.size,
+        }))
         : [],
       assignedTo: data.assignedTo,
       assignedBy: user?._id,
@@ -125,7 +126,7 @@ const Task = () => {
             )}
           </div>
 
-         
+
           <div>
             <Label htmlFor="description">Description</Label>
             <Textarea
@@ -141,7 +142,7 @@ const Task = () => {
             )}
           </div>
 
-        
+
           <div className="relative">
             <Label htmlFor="dueDate">Due Date</Label>
             <Input
@@ -166,13 +167,13 @@ const Task = () => {
             )}
           </div>
 
-         
+
           <div className="grid grid-cols-3 gap-4">
             <div className="flex-1 ">
               <Label>Status</Label>
               <Select
                 defaultValue="todo"
-                
+
                 onValueChange={(val) => setValue("status", val)}
               >
                 <SelectTrigger className="mt-2" >
@@ -203,37 +204,37 @@ const Task = () => {
               </Select>
             </div>
 
-                
+
 
             <div className="flex-1">
-               <Label>Members</Label>
-            <Select
-              defaultValue={user?.username || ""}
-              onValueChange={(val) => setValue("member", val)}
-            >
-              <SelectTrigger className="mt-2" >
-                <SelectValue placeholder="Select member" />
-              </SelectTrigger>
-              <SelectContent  className="h-20">
-                {members?.map((member) => (
-                  <SelectItem key={member._id} value={member.user._id}>
-                    {member.user.username || member.user.email}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.assignedTo && (
-              <p className="text-sm text-red-500">
-                {errors.assignedTo.message}
-              </p>
-            )}
+              <Label>Members</Label>
+              <Select
+                defaultValue={user?._id || ""}
+                onValueChange={(val) => setValue("assignedTo", val)}
+              >
+                <SelectTrigger className="mt-2" >
+                  <SelectValue placeholder="Select member" />
+                </SelectTrigger>
+                <SelectContent className="h-20">
+                  {members?.map((member) => (
+                    <SelectItem key={member._id} value={member.user._id}>
+                      {member.user.username || member.user.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.assignedTo && (
+                <p className="text-sm text-red-500">
+                  {errors.assignedTo.message}
+                </p>
+              )}
             </div>
           </div>
 
-      
-     
 
-         
+
+
+
           <div>
             <Label htmlFor="attachments">Attachments</Label>
             <Input
@@ -246,7 +247,7 @@ const Task = () => {
             />
           </div>
 
-        
+
           <div>
             <Label>Labels</Label>
             <div className="flex flex-wrap gap-2 mb-2">
