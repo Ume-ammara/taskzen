@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Bell, User } from "lucide-react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import ToggleTheme from "./ToggleTheme";
 
 const Navbar = () => {
   return (
@@ -14,8 +15,15 @@ const Navbar = () => {
 
       {/* Right (Notifications + User) */}
       <div className="flex items-center gap-4">
+        {/* Theme Toggle */}
+        <ToggleTheme />
+
         {/* Notification Icon */}
-        <Button variant="ghost" size="icon" className="relative text-sidebar-foreground">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative text-sidebar-foreground"
+        >
           <Bell className="h-6 w-6" />
           <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
         </Button>
@@ -31,13 +39,16 @@ const Navbar = () => {
               <span className="hidden sm:block">Sidra</span>
             </Button>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent className="w-40 bg-sidebar text-sidebar-foreground border border-sidebar-border">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuRadioItem>Settings</DropdownMenuRadioItem>
             <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem className="text-red-600">Logout</DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem className="text-red-600">
+              Logout
+            </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
