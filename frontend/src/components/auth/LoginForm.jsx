@@ -5,15 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useAuthStore } from "@/store/authStore";
 import { LoginUserSchema } from "@/schemas/authScema";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { loginUser } = useAuthStore();
-
+  const { loginUser, fetchUserProfile } = useAuthStore();
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -26,6 +26,7 @@ const LoginForm = () => {
     console.log("Login Data:", data);
     try {
       await loginUser(data);
+      await fetchUserProfile()
     } catch (error) {
       console.log("Login failed", error);
     }

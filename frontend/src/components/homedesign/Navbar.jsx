@@ -3,8 +3,24 @@ import { Bell, User } from "lucide-react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import ToggleTheme from "./ToggleTheme";
+import { useAuthStore } from "@/store/authStore";
+import { useNavigate } from "react-router-dom";
+
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const { user, logoutUser } = useAuthStore()
+  console.log("user", user)
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      navigate("/auth/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <header className=" left-0 w-full border-b border-sidebar-border shadow-sm px-6 py-3 flex items-center justify-between  top-0 z-50">
 
@@ -36,7 +52,7 @@ const Navbar = () => {
               className="flex items-center gap-2 rounded-full px-3 py-1 hover:bg-sidebar-accent"
             >
               <User className="h-6 w-6" />
-              <span className="hidden sm:block">Sidra</span>
+              <span className="hidden sm:block">{user?.username}</span>
             </Button>
           </DropdownMenuTrigger>
 
@@ -46,7 +62,7 @@ const Navbar = () => {
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuRadioItem>Settings</DropdownMenuRadioItem>
             <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem className="text-red-600">
+            <DropdownMenuCheckboxItem className="text-red-600" onClick={handleLogout}>
               Logout
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>

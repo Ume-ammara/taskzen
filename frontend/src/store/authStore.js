@@ -131,6 +131,7 @@ export const useAuthStore = create((set, get) => ({
   },
 
   fetchUserProfile: async () => {
+     console.log("fetchUserProfile called");
     try {
       get().startLoading();
       const res = await apiClient.get("/auth/profile");
@@ -151,4 +152,22 @@ export const useAuthStore = create((set, get) => ({
       get().stopLoading();
     }
   },
+
+  logoutUser :async()=>{
+    try {
+        get().startLoading();
+      await apiClient.get("/auth/logout")
+      set({user:null})
+    } catch (error) {
+      console.error("Logout request failed", error);
+      
+        error.response?.data?.message ||
+        error?.message ||
+        "Unable to process logout request";
+      get().setError(msg);
+    } finally {
+      get().stopLoading();
+    }
+    
+  }
 }));

@@ -17,12 +17,20 @@ import ProjectDetail from "./pages/ProjectDetail";
 import Task from "./components/task/Task";
 import { ResendEmailVerification } from "./pages/ResendEmailVerification";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { useEffect } from "react";
 
 
 
 const App = () => {
-  const { user } = useAuthStore();
+  const { user, fetchUserProfile } = useAuthStore();
 
+  useEffect(() => {
+    const myFunc = async () => {
+      const data = await fetchUserProfile()
+      console.log('data', data)
+    }
+    myFunc()
+  }, [fetchUserProfile])
 
 
   return (
