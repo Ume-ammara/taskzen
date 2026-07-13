@@ -26,6 +26,9 @@ export const isLoggedIn = asyncHandler(async (req, res, next) => {
 
     next();
   } catch (error) {
+    console.log("JWT ERROR NAME:", error.name);
+    console.log("JWT ERROR MESSAGE:", error.message);
+    console.log(error);
     throw new ApiError(401, error?.message || "Invalid access token", error);
   }
 });
