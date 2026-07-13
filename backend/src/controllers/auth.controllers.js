@@ -104,6 +104,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   await user.save();
 
   const isProduction = process.env.NODE_ENV === "production";
+  console.log("isProduction:", isProduction);
 
   const refreshCookieOptions = {
     httpOnly: true,
