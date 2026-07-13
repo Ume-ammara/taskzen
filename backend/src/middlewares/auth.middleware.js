@@ -3,6 +3,9 @@ import { asyncHandler } from "../utils/async-handler.js";
 import jwt from "jsonwebtoken";
 
 export const isLoggedIn = asyncHandler(async (req, res, next) => {
+  console.log("Cookies:", req.cookies);
+  console.log("Refresh Token:", req.cookies.refreshToken);
+  console.log("Access Token:", req.cookies.accessToken);
   try {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
