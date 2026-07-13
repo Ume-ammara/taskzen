@@ -51,7 +51,10 @@ export const getProjectById = asyncHandler(async (req, res) => {
     projectId: req.params.projectId,
   });
 
-  const project = await Project.findById(projectId);
+  const project = await Project.findById(projectId).populate(
+    "createdBy",
+    "fullName username",
+  );
   if (!project) {
     throw new ApiError(404, "Project not found ");
   }
@@ -113,7 +116,7 @@ export const addMemberController = asyncHandler(async (req, res) => {
     user: user._id,
     project: projectId,
   });
- 
+
   if (isAlreadyMember) {
     throw new ApiError(409, "User already exist in this project");
   }
@@ -131,63 +134,76 @@ export const addMemberController = asyncHandler(async (req, res) => {
   if (!projectMember) {
     throw new ApiError(500, "Unable to create project member");
   }
-  return res.status(200).json(new ApiResponse(200, "Member added successfully", projectMember));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Member added successfully", projectMember));
 });
 
-export const getAllProjectMembers = asyncHandler(async(req, res)=>{
-   const {projectId} = getAllProjectMembersSchema.parse({projectId : req.params.projectId})
+export const getAllProjectMembers = asyncHandler(async (req, res) => {
+  const { projectId } = getAllProjectMembersSchema.parse({
+    projectId: req.params.projectId,
+  });
 
-   const members = await ProjectMember.find({project :projectId})
-   .populate("user", "username email")
-   if(!members || members.length === 0){
-    throw new ApiError(404, "Member not found ")
-   }
+  const members = await ProjectMember.find({ project: projectId }).populate(
+    "user",
+    "username email",
+  );
+  if (!members || members.length === 0) {
+    throw new ApiError(404, "Member not found ");
+  }
 
-   return res.status(200).json(new ApiResponse(200, "Members fetched successfully" , {members}))
-
-})
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Members fetched successfully", { members }));
+});
 
 export const roleUpdate = asyncHandler(async (req, res) => {
-  const { role , memberId} = roleUpdateSchema.parse({
+  const { role, memberId } = roleUpdateSchema.parse({
     ...req.body,
     memberId: req.params?.memberId,
   });
 
-  const member = await ProjectMember.findById(memberId)
-  console.log("member", member)
-  if(!member){
-      throw new ApiError(404, "Project member not found ")
+  const member = await ProjectMember.findById(memberId);
+  console.log("member", member);
+  if (!member) {
+    throw new ApiError(404, "Project member not found ");
   }
 
-  if(member.role === role){
-    throw new ApiError(403, "User have already role")
+  if (member.role === role) {
+    throw new ApiError(403, "User have already role");
   }
 
-  member.role = role
-  const updateRole = await member.save()
+  member.role = role;
+  const updateRole = await member.save();
 
-  return res.status(200).json(
-  new ApiResponse(200, "Role updated successfully", updateRole)
-);
-
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Role updated successfully", updateRole));
 });
 
-export const removeProjectMember = asyncHandler(async(req, res)=>{
-  const {email , projectId} = removeMemberSchema.parse({...req.body, projectId: req.params?.projectId}) 
+export const removeProjectMember = asyncHandler(async (req, res) => {
+  const { email, projectId } = removeMemberSchema.parse({
+    ...req.body,
+    projectId: req.params?.projectId,
+  });
 
-  const user = await User.findOne({email})
-  if(!user){
-    throw new ApiError(404, "User not found")
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(404, "User not found");
   }
 
-  const member = await ProjectMember.findOneAndDelete({project: projectId, user: user._id})
-  if(!member){
-    throw new ApiError(404, "Project member not found")
+  const member = await ProjectMember.findOneAndDelete({
+    project: projectId,
+    user: user._id,
+  });
+  if (!member) {
+    throw new ApiError(404, "Project member not found");
   }
 
-  return res.status(200).json(new ApiResponse(200, "Member removed successfully", member))
-
-})
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Member removed successfully", member));
+});
 
 export const deleteProject = asyncHandler(async (req, res) => {
   const projectId = req.params?.projectId;
