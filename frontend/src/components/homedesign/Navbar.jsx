@@ -69,6 +69,7 @@ const Navbar = () => {
         </DropdownMenu>
       </div>
     </header>
+
   );
 };
 export default Navbar;
