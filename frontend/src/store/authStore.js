@@ -17,7 +17,7 @@ export const useAuthStore = create((set, get) => ({
       set({
         user: res.data?.data?.user ?? null,
       });
-      console.log("backend data3:", res.data?.data?.user);
+      // console.log("backend data3:", res.data?.data?.user);
     } catch (error) {
       const msg =
         error.response?.data?.message || error?.message || "Login failed";
@@ -131,14 +131,13 @@ export const useAuthStore = create((set, get) => ({
   },
 
   fetchUserProfile: async () => {
-     console.log("fetchUserProfile called");
     try {
       get().startLoading();
       const res = await apiClient.get("/auth/profile");
       set({
         user: res.data?.data?.user ?? null,
       });
-      console.log("User profile fetched successfully", res.data?.data?.user);
+      // console.log("User profile fetched successfully", res.data?.data?.user);
     } catch (error) {
       if (error.response?.status !== 401) {
         const msg =
@@ -153,21 +152,20 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  logoutUser :async()=>{
+  logoutUser: async () => {
     try {
-        get().startLoading();
-      await apiClient.get("/auth/logout")
-      set({user:null})
+      get().startLoading();
+      await apiClient.get("/auth/logout");
+      set({ user: null });
     } catch (error) {
       console.error("Logout request failed", error);
-      
-        error.response?.data?.message ||
+
+      error.response?.data?.message ||
         error?.message ||
         "Unable to process logout request";
       get().setError(msg);
     } finally {
       get().stopLoading();
     }
-    
-  }
+  },
 }));

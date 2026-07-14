@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 const Navbar = () => {
   const navigate = useNavigate();
   const { user, logoutUser } = useAuthStore()
-  console.log("user", user)
+  // console.log("user", user)
 
   const handleLogout = async () => {
     try {

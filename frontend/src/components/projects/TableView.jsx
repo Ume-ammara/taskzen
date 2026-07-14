@@ -1,11 +1,24 @@
-import React from "react";
+import { useTaskStore } from "@/store/taskStore";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 const TableView = () => {
-  const tasks = [
-    { title: "Setup Project", status: "Done", assignee: "Ali" },
-    { title: "Build Auth", status: "In Progress", assignee: "Sara" },
-    { title: "Design UI", status: "To Do", assignee: "Ahmed" },
-  ];
+  const { tasks, fetchAllTasks } = useTaskStore()
+  const { projectId } = useParams()
+
+  console.log("fetch allTask ::", tasks)
+
+  useEffect(() => {
+    if (projectId) {
+      fetchAllTasks(projectId)
+    }
+  }, [projectId])
+
+  // const tasks = [
+  //   { title: "Setup Project", status: "Done", assignee: "Ali" },
+  //   { title: "Build Auth", status: "In Progress", assignee: "Sara" },
+  //   { title: "Design UI", status: "To Do", assignee: "Ahmed" },
+  // ];
 
   return (
     <div className="overflow-x-auto">
@@ -22,7 +35,9 @@ const TableView = () => {
             <tr key={i} className="border-t hover:bg-gray-50">
               <td className="p-3">{task.title}</td>
               <td className="p-3">{task.status}</td>
-              <td className="p-3">{task.assignee}</td>
+              <td className="p-3">{task?.
+                assignedTo.username
+              }</td>
             </tr>
           ))}
         </tbody>

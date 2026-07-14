@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { apiClient } from "@/api/axiosApi";
 
 export const useTaskStore = create((set, get) => ({
-  tasks: null,
+  tasks: [],
   task: null,
   isLoading: false,
   error: null,
@@ -34,7 +34,7 @@ export const useTaskStore = create((set, get) => ({
       console.log("Task status updated successfully", updateStatus);
       set({
         tasks: get().tasks.map((task) =>
-          task._id == taskId ? updateStatus : task
+          task._id == taskId ? updateStatus : task,
         ),
       });
     } catch (error) {
@@ -51,7 +51,7 @@ export const useTaskStore = create((set, get) => ({
 
       const res = await apiClient.post(
         `/task/create-task/${projectId}`,
-        taskData
+        taskData,
       );
       console.log("Task created successfully", res.data?.data);
       set((state) => ({

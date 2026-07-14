@@ -27,10 +27,11 @@ const Task = () => {
   const { members, fetchAllMembers } = useMemberStore();
 
   useEffect(() => {
-    if (open && members === null) {
+    if (open) {
       fetchAllMembers(projectId);
     }
-  }, [open, members, projectId, fetchAllMembers]);
+  }, [open, projectId]);
+
 
   const {
     register,
@@ -218,7 +219,8 @@ const Task = () => {
                 <SelectContent className="h-20">
                   {members?.map((member) => (
                     <SelectItem key={member._id} value={member.user._id}>
-                      {member.user.username || member.user.email}
+
+                      {member?.user.username || member?.user.email}
                     </SelectItem>
                   ))}
                 </SelectContent>

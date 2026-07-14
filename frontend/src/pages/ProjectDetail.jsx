@@ -1,62 +1,19 @@
-// import Navbar from "@/components/homedesign/Navbar";
-// import KanbanView from "@/components/projects/KanbanView";
-// import ListView from "@/components/projects/ListView";
-// import ProjectHeader from "@/components/projects/ProjectHeader";
-// import TableView from "@/components/projects/TableView";
-// import ViewSwitcher from "@/components/projects/ViewSwitcher";
-// import Task from "@/components/task/Task";
-// import { useProjectStore } from "@/store/projectStore";
-// import React, { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-
-// const ProjectDetail = () => {
-//   const [activeView, setActiveView] = useState("kanban");
-//   const { getProject, project } = useProjectStore();
-//   const { projectId } = useParams();
-
-//   useEffect(() => {
-//     if (projectId) {
-//       getProject(projectId);
-//     }
-//   }, [projectId, getProject]);
-
-//   if (!project) return <div>Loading .....</div>;
-
-//   return (
-//     <div className=" w-full p-6 space-y-6">
-//       <Navbar />
-//       <ProjectHeader />
-
-//       <ViewSwitcher activeView={activeView} setActiveView={setActiveView} />
-
-//       <div className="flex flex-1 justify-between overflow-hidden">
-//         <div className="mt-6 flex-1 p-4 overflow-y-auto">
-//           {activeView === "kanban" && <KanbanView />}
-//           {activeView === "list" && <ListView />}
-//           {activeView === "table" && <TableView />}
-//           <Task />
-//         </div>
-       
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ProjectDetail;
-
-import Navbar from "@/components/homedesign/Navbar";
-import KanbanView from "@/components/projects/KanbanView";
-import ListView from "@/components/projects/ListView";
-import ProjectHeader from "@/components/projects/ProjectHeader";
-import TableView from "@/components/projects/TableView";
-import ViewSwitcher from "@/components/projects/ViewSwitcher";
-import Task from "@/components/task/Task";
-import { useProjectStore } from "@/store/projectStore";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useProjectStore } from "@/store/projectStore";
+import Navbar from "@/components/homedesign/Navbar";
+import ProjectHeader from "@/components/projects/ProjectHeader";
+import ViewSwitcher from "@/components/projects/ViewSwitcher";
+import AddMember from "@/components/task/AddMember";
+import Task from "@/components/task/Task";
+import KanbanView from "@/components/projects/KanbanView";
+import ListView from "@/components/projects/ListView";
+import TableView from "@/components/projects/TableView";
+
 
 const ProjectDetail = () => {
   const [activeView, setActiveView] = useState("kanban");
+
   const { getProject, project } = useProjectStore();
   const { projectId } = useParams();
 
@@ -66,27 +23,32 @@ const ProjectDetail = () => {
     }
   }, [projectId, getProject]);
 
-  if (!project) return <div>Loading .....</div>;
+  if (!project) return <div>Loading...</div>;
 
   return (
     <div className="w-full p-6 space-y-6">
       <Navbar />
+
       <ProjectHeader />
 
-      <ViewSwitcher activeView={activeView} setActiveView={setActiveView} />
+      {/* View Switcher + Action Buttons */}
+      <div className="flex items-center justify-between">
+        <ViewSwitcher
+          activeView={activeView}
+          setActiveView={setActiveView}
+        />
 
-      <div className="flex flex-1 gap-6 overflow-hidden">
-        {/* Main Project Views */}
-        <div className="mt-6 flex-1 p-4 overflow-y-auto">
-          {activeView === "kanban" && <KanbanView />}
-          {activeView === "list" && <ListView />}
-          {activeView === "table" && <TableView />}
-           <div>
+        <div className="flex items-center gap-3">
+          <AddMember />
           <Task />
         </div>
-        </div>
-       
-        
+      </div>
+
+      {/* Project Views */}
+      <div className="mt-6">
+        {activeView === "kanban" && <KanbanView />}
+        {activeView === "list" && <ListView />}
+        {activeView === "table" && <TableView />}
       </div>
     </div>
   );

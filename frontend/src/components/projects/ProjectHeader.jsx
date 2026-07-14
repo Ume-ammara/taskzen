@@ -3,7 +3,7 @@ import React from "react";
 
 const ProjectHeader = () => {
   const { project } = useProjectStore()
-  console.log('project:::', project)
+  // console.log('project:::', project)
 
   return (
     <div className="  rounded-2xl border p-4 shadow-sm bg-white">
