@@ -15,7 +15,7 @@ const ProjectDetail = () => {
   const navigate = useNavigate();
 
   const { project, getProject } = useProjectStore();
-  const { members, fetchAllMembers } = useMemberStore();
+  const { members, fetchAllMembers, removeMember } = useMemberStore();
   console.log("member name", members)
   useEffect(() => {
     if (projectId) {
@@ -52,32 +52,52 @@ const ProjectDetail = () => {
             <AddMember />
           </div>
 
-          <div className="p-5 space-y-3">
+          <div className="p-5">
             {members?.length ? (
-              members.map((member) => (
-                <div
-                  key={member._id}
-                  className="grid grid-cols-3 items-center py-3 border-b last:border-none"
-                >
-                  <p className="font-medium">
-                    {member.user.username}
-                  </p>
-
-                  <p className="capitalize">
-                    {member.role.replace("_", " ")}
-                  </p>
-
-                  <div className="flex justify-end gap-2">
-                    <Button size="icon" variant="outline">
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-
-                    <Button size="icon" variant="destructive">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
+              <>
+                {/* Table Header */}
+                <div className="grid grid-cols-3 items-center border-b border-border pb-3 mb-2 text-sm font-semibold text-muted-foreground">
+                  <p>Name</p>
+                  <p>Role</p>
+                  <p className="text-right">Actions</p>
                 </div>
-              ))
+
+                {/* Members */}
+                {members.map((member) => (
+                  <div
+                    key={member._id}
+                    className="grid grid-cols-3 items-center py-3 border-b border-border last:border-none hover:bg-muted/40 transition-colors"
+                  >
+                    <p className="font-medium">
+                      {member.user?.username}
+                    </p>
+
+                    <p className="capitalize text-muted-foreground">
+                      {member.role.replaceAll("_", " ")}
+                    </p>
+
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="hover:text-red-500"
+                        onClick={() =>
+                          removeMember(projectId, member._id)
+                        }
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </>
             ) : (
               <div className="py-10 text-center text-muted-foreground">
                 No members found.

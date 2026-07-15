@@ -47,4 +47,23 @@ export const useMemberStore = create((set, get) => ({
       set({ isLoading: false });
     }
   },
+
+  removeMember: async (projectId, memberId) => {
+    try {
+      set({ isLoading: true, error: null });
+
+      await apiClient.delete(`/project/${projectId}/members/${memberId}`);
+
+      set((state) => ({
+        members: state.members.filter((member) => member._id !== memberId),
+      }));
+    } catch (error) {
+      console.error(error);
+      set({
+        error: error.response?.data?.message || "Failed to remove member",
+      });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));
